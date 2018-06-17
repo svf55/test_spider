@@ -1,0 +1,27 @@
+version: '2'
+services:
+  splash:
+    image: scrapinghub/splash
+    restart: always
+    ports:
+      - "5023:5023"
+      - "8050:8050"
+      - "8051:8051"
+  db:
+    image: postgres:10.1
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgres_data:/var/lib/postgresql/data/
+  btc_spider:
+    build:
+      dockerfile: Dockerfile
+      context: .
+    depends_on:
+      - splash
+      - db
+    volumes:
+      - .:/btc_spider
+
+volumes:
+  postgres_data:
+
